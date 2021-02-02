@@ -1,0 +1,699 @@
+<div class="container mt-3">
+      <div class="row mt-4">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label>Fecha de cotización</label>
+               <input type=date class="form-control" disabled="" value="{{fech_cotizacion | date:'yyyy-MM-dd'}}">
+               <p>{{myCate |date:'yyyy-MM-dd'}}</p>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label>Fecha de vencimiento</label>
+               <input type=date class="form-control" disabled="" value="{{fech_vencimiento | date:'yyyy-MM-dd'}}">
+            </div>
+         </div>
+         <div class="col-md-4 text-right d-flex align-items-end">
+            <div class="form-group">
+               <h3>No. Cotización {{no_documento}}</h3>
+            </div>
+         </div>
+      </div>
+      <div class="row py-3" style="border: 1px solid #E9ECEF; background-color: #F2F2F2;box-shadow: 0px 0px 7px 1px rgba(227,227,227,0.78);">
+         <div class="col-md-12 text-center">
+            <h4>Datos del cliente</h4>
+            <!-- <input type="text" value="{{id_documento}}" id="id_documento"> -->
+         </div>
+         <div class="col-md-12">
+               <label>Cédula o Nit</label>
+               <div class="col-md-6 d-flex justify-content-between" style="padding: 0px !important;">
+                  <input type=text class="form-control" #nit name="nit" value="">
+                  <button type="button" class="btn btn-sm py-2 mx-2 px-4" style="background-color: #B2B9BB" (click)="getcliente(nit.value)">Buscar</button>
+                  <button type="button" class="btn btn-sm py-2 mx-2 px-4 btn-outline-secondary" >Nuevo</button>
+               </div>
+               <p><small style="color: orange;">{{msgErrorCliente}}</small></p>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Nombre completo</label>
+               <input type=text class="form-control"placeholder="" name="nombre"  value="{{cliente.nombre}}">
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Dirección</label>
+               <input type=text class="form-control" name="calle" value="{{direccion_completa}}">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">E-mail</label>
+               <input type=text class="form-control" name = "email"value="{{cliente.email}}">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Teléfono</label>
+               <input type=text class="form-control" name="telefono" value="{{cliente.telefono}}">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Celular</label>
+               <input type=text class="form-control" value="{{cliente.celular}}">
+            </div>
+         </div>
+      </div>
+
+      <!-- Botones productos -->
+      <div class="col-md-10 offset-1 my-3">
+         <div class="row">
+            <div class="col-md-4">
+               <h5>Nuevo tipo de producto</h5>
+            </div>
+            <div class="col-md-6">
+               <div class="row">
+                  <div class="col-md-4">
+                     <!-- <button type="button" class="btn btn-default">Item sencillo</button> -->
+                     <button type="button" class="btn btn-default" (click) = "abrirModalItem()">Item sencillo</button>
+                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_item" id="button_item_sencillo"  hidden="">Item sencillo</button>
+                  </div>
+                  <div class="col-md-4">
+                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_talonario">Talonario</button>
+                  </div>
+                  <div class="col-md-4">
+                     <button type="button" class="btn btn-default">Revista</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Tabla cotizaciones -->
+   <div class="container">
+      <div class="row">
+         <div class="col-md-12" style="box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15)">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Cantidad</th>
+                  <th scope="col">Descripcion</th>
+                  <th scope="col">Valor unitario</th>
+                  <th scope="col">Valor total</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let documento of allCotizaciones">
+                  <th>{{documento.documento_id}}</th>
+                  <td>{{documento.cantidad}}</td>
+                  <td>{{documento.descripcion}}</td>
+                  <td>{{documento.val_unitario | currency}}</td>
+                  <td>{{documento.val_total | currency}}</td>
+                  <td><button class="btn btn-sm btn-secondary mr-2" (click) ="editarItem(documento.documento_id,documento.id_detalle)">Editar</button>
+                     <button class="btn btn-sm btn-secondary" (click) = "deleteItem(documento.id_detalle)">Eliminar</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <br><br>
+         </div>
+      </div>
+   </div>
+
+   <div class="container mt-4">
+      <div class="row">
+         <div class="col-md-7">
+            <div class="form-group">
+             <textarea class="form-control" rows="8" placeholder="Observaciones"></textarea>
+           </div>
+         </div>
+         <div class="col-md-5">
+            <div class="form-group row">
+               <label class="col-sm-4 col-form-label">Descuento: </label>
+               <div class="col-sm-8">
+                  <input type="text" class="form-control" id="">
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-4 col-form-label">Subtotal: </label>
+               <div class="col-sm-8">
+                  <input type="text" class="form-control" id="" value="{{subtotal | currency}}" disabled="">
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-4 col-form-label">IVA 16%: </label>
+               <div class="col-sm-8">
+                  <input type="text" class="form-control" id="" value="{{iva | currency}}" disabled="">
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-4 col-form-label">Total: </label>
+               <div class="col-sm-8">
+                  <input type="text" class="form-control" id="" value="{{total | currency}}" disabled="">
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <br>
+   <div class="container">
+      <div class="row">
+         <div class="col-md-12">
+            <div class=" d-flex justify-content-between">
+               <button class="btn btn-default">Cancelar</button>
+               <button class="btn btn-default">Imprimir costos</button>
+               <button class="btn btn-default">Imprimir</button>
+               <button class="btn btn-default">Enviar por correspondencia</button>
+               <button class="btn btn-default">Enviar por correo</button>
+               <button class="btn btn-default" (click) ="guardarDoc('BORRADOR')">Guardar</button>
+               <button class="btn btn-default" (click) ="guardarDoc('FINALIZADO')">Guardar y finalizar</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <br><br>
+<!-- Modal Item -->
+<div class="modal fade" id="modal_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Item Sencillo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup] = "formItem" (ngSubmit)="guardarItem()">
+      	<!-- <input type="text" formControlName="tipo_documento" value="ITEM SENCILLO"> -->
+        <div class="modal-body">
+           <div class="col-md-10 offset-1" id="view_item" name="soy_name">
+             <div class="row">
+                <div class="col-md-12">
+                   <div class="form-group row">
+                       <label class="col-md-2 col-form-label">Plantilla</label>
+                       <div class="col-md-7">
+                            <select class="custom-select" formControlName="plantilla">
+                              <option selected>Seleccionar...</option>
+                              <option value="1">Plantilla 1</option>
+                              <option value="2">Plantilla 2</option>
+                              <option value="3">Plantilla 3</option>
+                            </select>
+                       </div>
+                    </div>
+                 </div>
+             </div>
+             <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                       <label>cantidad</label>
+                       <input type=number class="form-control"  formControlName="cantidad" value="{{item.cantidad}}">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                       <label>Descripción</label>
+                       <input type=text class="form-control"  formControlName="descripcion" value="{{item.descripcion}}">
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                   <div class="form-group">
+                       <label class="text-center">Tamaño</label>
+                       <div class="d-flex justify-content-between">
+                          <input type=number class="form-control" formControlName="tam_1">
+                          <label class="col-md-2 col-form-label">X</label>
+                          <input type=number class="form-control" formControlName="tam_2">
+                       </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                   <div class="form-group">
+                       <label class="text-center">Tintas</label>
+                       <div class="d-flex justify-content-between">
+                          <input type=number class="form-control" formControlName="tinta_1">
+                          <label class="col-md-2 col-form-label">X</label>
+                          <input type=number class="form-control" formControlName="tinta_2">
+                       </div>
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <label>Valor diseño</label>
+                       <input type=number class="form-control" formControlName="val_diseno" value="{{item.vr_diseno | currency}}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <label>Transporte</label>
+                       <input type=number class="form-control" formControlName="transporte">
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <label>Valor refile</label>
+                       <input type=number class="form-control" formControlName="val_rifle" value="{{item.vr_rifle | currency}}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                    		<label class="col-form-label">Tipo maquina</label>
+								<select class="custom-select" formControlName="val_tip_maq">
+									<option  *ngFor="let tipo_m of tipo_maquina" value="{{tipo_m.id_tipo_maquina}}-{{tipo_m.precio_millar}}">{{tipo_m.nombre}}</option>
+								</select>
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                	<div class="form-group">
+                     <label class="col-form-label">Tipo papel</label>
+							<select class="custom-select" formControlName="tipo_papel"  >
+								<option *ngFor="let tipo_p of tipo_papel" value="{{tipo_p.id_tipo_papel}}-{{tipo_p.precio}}">{{tipo_p.nombre}}</option>
+							</select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <label>% Ganancia</label>
+                       <input type=text class="form-control" formControlName="por_ganancia">
+                    </div>
+                </div>
+             </div>
+
+           </div>
+           <div class="col-md-10 offset-1" id="view_acabado" style="display: none">
+              <div class="row">
+                  <div class="col-md-12">
+                     <div class="row">
+                      <div class="col-md-6">
+                          <div class="form-group">
+                             <label>Costos</label>
+                             <input type=number class="form-control" formControlName="costos" id="costo_item" value="">
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                             <label>Ganancias</label>
+                             <input type=text class="form-control" formControlName="ganancia" id="ganacia_item">
+                          </div>
+                      </div>
+                   </div>
+                  </div>
+                 <div class="col-md-12">
+                 	<!-- <input type="text" formControlName = 'isnum_acabado' id="isnum_acabado"> -->
+                    <table class="table" border="0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Descripción</th>
+                          <th scope="col">Medida</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let acabado of allAcabados">
+                          <td>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="customCheck{{acabado.id_acabado}}" formControlName="num_acabado{{acabado.id_acabado}}" (click) = "iscabado($event.target.checked,acabado.precio)">
+                               <label class="custom-control-label" for="customCheck{{acabado.id_acabado}}">{{acabado.descripcion}}</label>
+                             </div>
+                          </td>
+                          <td>{{acabado.unidad_medida}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                 </div>
+              </div>
+           </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" #cerrarModalItem>Cancelar</button>
+          <div>
+             <button  type="button" class="btn btn-primary" *ngIf="mostrar" (click) ="anterior()" >Anterior</button>
+             <button type="button" class="btn btn-primary mx-3" *ngIf="!mostrar" (click) ="siguiente()">Siguiente</button>
+             <button type="submit" class="btn btn-primary mx-3" *ngIf="mostrar">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal Talonario -->
+<div class="modal fade" id="modal_talonario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Talonarios</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup] = "formTalonario" (ngSubmit)="guardarTalonario()">
+        <div class="modal-body">
+            <div class="row">
+               <div class="col-md-6" style="border-right: 1px solid grey">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <div class="form-group row">
+                           <label class="col-md-2 col-form-label">Plantilla</label>
+                           <div class="col-md-10">
+                              <select class="custom-select" formControlName="tal_plantilla">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Plantilla 1</option>
+                                 <option value="2">Plantilla 2</option>
+                                 <option value="3">Plantilla 3</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>cantidad</label>
+                           <input type=number class="form-control"  formControlName="tal_cantidad" value="">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Descripción</label>
+                           <input type=text class="form-control"  formControlName="tal_descripcion" value="">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label class="text-center">Tamaño</label>
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tam_1">
+                              <label class="col-md-2 col-form-label">X</label>
+                              <input type=number class="form-control" formControlName="tal_tam_2">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>No. juegos por libreta</label>
+                           <input type=number class="form-control"  formControlName="tal_juegosxlibreta" value="">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Valor diseño</label>
+                           <input type=text class="form-control"  formControlName="tal_val_diseño" value="">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Transporte</label>
+                           <input type=text class="form-control"  formControlName="tal_transporte" value="">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group row">
+                           <div class="col-md-12">
+                              <label class="col-form-label">Acabado</label>
+                              <select class="custom-select" formControlName="tal_acabado">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="col-form-label">Por:</label>
+                        <div>
+                           <div class="form-check form-check-inline">
+                             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" formControlName="tal_radio">
+                             <label class="form-check-label" for="inlineRadio1">1</label>
+                           </div>
+                           <div class="form-check form-check-inline">
+                             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" formControlName="tal_radio">
+                             <label class="form-check-label" for="inlineRadio2">2</label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Valor unit.levante</label>
+                           <input type=text class="form-control"  formControlName="tal_val_unit_lev" value="">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group row">
+                           <div class="col-md-12">
+                              <label class="col-form-label">Tipo maquina</label>
+                              <select class="custom-select" formControlName="tal_tipo_maquina">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>% Ganancia</label>
+                           <input type=text class="form-control"  formControlName="tal_ganancia" value="">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Inicio numeración</label>
+                           <input type=number class="form-control"  formControlName="tal_inicio_num" value="">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Valor rifle</label>
+                           <input type=number class="form-control"  formControlName="tal_val_rifle" value="">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+
+                        <div class="form-group">
+                           <label>Valor millar numerada</label>
+                           <input type=number class="form-control"  formControlName="tal_val_millar_num" value="">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label>Valor millar perforado</label>
+                           <input type=number class="form-control"  formControlName="tal_val_millar_perf" value="">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group row">
+                           <div class="col-md-12">
+                              <label class="col-form-label">Original</label>
+                              <select class="custom-select" formControlName="tal_original">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Quimico final</option>
+                                 <option value="2">Quimico intermedio</option>
+                                 <option value="2">Bond 75 amarillo</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label class="text-center">Tintas</label>
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tinta01">
+                              <label class="col-md-2 col-form-label"></label>
+                              <input type=number class="form-control" formControlName="tal_tinta02">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-12">
+                              <label for="">Número de copias</label>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-12 text-center">
+                              <label for=""> Tintas</label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-2">
+                              <div class="form-check">
+                                <input type="checkbox" class="form-check-input" formControlName="tal_check_1">
+                                <label class="form-check-label" for="defaultCheck1">1</label>
+                              </div>
+                           </div>
+                           <div class="col-md-10">
+                              <select class="custom-select" formControlName="tal_select_1">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tinta11">
+                              <label class="col-md-2 col-form-label">X</label>
+                              <input type=number class="form-control" formControlName="tal_tinta12">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-2">
+                              <div class="form-check">
+                                <input type="checkbox" class="form-check-input" formControlName="tal_check_2">
+                                <label class="form-check-label" for="defaultCheck1">2</label>
+                              </div>
+                           </div>
+                           <div class="col-md-10">
+                              <select class="custom-select" formControlName="tal_select_2">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tinta21">
+                              <label class="col-md-2 col-form-label">X</label>
+                              <input type=number class="form-control" formControlName="tal_tinta22">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-2">
+                              <div class="form-check">
+                                <input type="checkbox" class="form-check-input" formControlName="tal_check_3">
+                                <label class="form-check-label" for="defaultCheck1">3</label>
+                              </div>
+                           </div>
+                           <div class="col-md-10">
+                              <select class="custom-select" formControlName="tal_select_3">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tinta31">
+                              <label class="col-md-2 col-form-label">X</label>
+                              <input type=number class="form-control" formControlName="tal_tinta32">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="row">
+                           <div class="col-md-2">
+                              <div class="form-check">
+                                <input type="checkbox" class="form-check-input" formControlName="tal_check_4">
+                                <label class="form-check-label" for="defaultCheck1">4</label>
+                              </div>
+                           </div>
+                           <div class="col-md-10">
+                              <select class="custom-select" formControlName="tal_select_4">
+                                 <option selected>Seleccionar...</option>
+                                 <option value="1">Engrapado</option>
+                                 <option value="2">Sueltos</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <div class="d-flex justify-content-between">
+                              <input type=number class="form-control" formControlName="tal_tinta41">
+                              <label class="col-md-2 col-form-label">X</label>
+                              <input type=number class="form-control" formControlName="tal_tinta42">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          <hr>
+           <!-- <div class="col-md-12" id="view_acabado" style="display: block;">
+              <div class="row">
+                 <div class="col-md-12">
+                    <table class="table" border="0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Descripción</th>
+                          <th scope="col">Medida</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let acabado of allAcabados">
+                          <td>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="customCheck{{acabado.id_acabado}}" formControlName="num_acabado{{acabado.id_acabado}}" (click) = "iscabado($event.target.checked)">
+                               <label class="custom-control-label" for="customCheck{{acabado.id_acabado}}">{{acabado.descripcion}}</label>
+                             </div>
+                          </td>
+                          <td>{{acabado.unidad_medida}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                 </div>
+              </div>
+           </div> -->
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" #cerrarModalItem>Cancelar</button>
+          <div>
+             <!-- <button  type="button" class="btn btn-primary" *ngIf="mostrar" (click) ="anterior()" >Anterior</button>
+             <button type="button" class="btn btn-primary mx-3" *ngIf="!mostrar" (click) ="siguiente()">Siguiente</button>
+             <button type="submit" class="btn btn-primary mx-3" >Guardar</button> -->
+             <!-- *ngIf="mostrar" -->
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

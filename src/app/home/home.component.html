@@ -1,0 +1,50 @@
+<div class="container mt-3">
+	<div class="row mt-4">
+    <div class="col-md-12 mb-3">
+      <button class="btn btn-default" [routerLink]="['/clientes']">CLientes</button>
+    </div>
+		<div class="col-md-12 d-flex justify-content-between">
+			<button class="btn btn-default" [routerLink]="['/cotizacion',0]">Nueva cotización</button>
+			<button class="btn btn-default">Orden impresión</button>
+			<button class="btn btn-default">Orden pedido de papel</button>
+			<button class="btn btn-default">CTP</button>
+			<button class="btn btn-default">Tipos de papel</button>
+			<button class="btn btn-default">Tipos de maquina</button>
+			<button class="btn btn-default">Gestionar</button>
+		</div>
+	</div>
+	<br><br>
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="text-center mb-2">Cotizaciones</h2>
+			<div class="col-md-12" style="box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15)">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Número</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">PDF</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let documento of allDocumentos">
+                  <th>{{documento.no_documento}}</th>
+                  <td>{{documento.nombre}}</td>
+                  <td>{{documento.total}}</td>
+                  <td>{{documento.fecha | date: 'M/d/yyyy'}}</td>
+                  <td>{{documento.status}}</td>
+                  <td>PDF</td>
+                  <td><button class="btn btn-sm btn-secondary mr-2" [routerLink]="['/cotizacion',documento.id_documento]" *ngIf="documento.status != 'FINALIZADO'">Editar</button>
+                     <button class="btn btn-sm btn-secondary" (click)="deletedDoc(documento.id_documento)">Eliminar</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <br><br>
+         </div>
+		</div>
+	</div>
+</div>
